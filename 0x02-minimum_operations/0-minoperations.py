@@ -1,50 +1,19 @@
 #!/usr/bin/python3
-"""
-Calculates min operations needed to achieve n characters
-using only Copy All and Paste operations.
-"""
+""" dertimines minimum number of "copy all"/"paste"
+operations to produce `n` number characters starting from 1. """
 
 
 def minOperations(n):
-    """
-    Calculates min operations needed to achieve n characters.
-
-    Args:
-        n (int): The target number of characters.
-
-    Returns:
-        int: The minimum number of operations needed.
-    """
-    if n <= 1:
+    if not isinstance(n, int) or n < 1:
         return 0
 
-    """ Initialize an array to store min operations for each number
-    up to n """
-    dp = [0] * (n + 1)
+    minOps = 0
+    divisor = 2
 
-    # Iterate from 2 to n
-    for i in range(2, n + 1):
-        # Initialize min operations for current number as infinity
-        dp[i] = float('inf')
-        """ Iterate from 1 to i // 2 (as beyond that it's not possible
-        to achieve) """
-        for j in range(1, i // 2 + 1):
-            # If j is a divisor of i
-            if i % j == 0:
-                """ Calculate the number of operations needed for i by
-                copying j times """
-                # and pasting (i // j - 1) times
-                dp[i] = min(dp[i], dp[j] + i // j)
+    while n > 1:
+        while n % divisor == 0:
+            minOps += divisor
+            n //= divisor
+        divisor += 1
 
-    return dp[n]
-
-
-# Example usage:
-if __name__ == "__main__":
-    n = 4
-    print("Min # of operations to reach {} characters: {}"
-          .format(n, minOperations(n)))
-
-    n = 12
-    print("Min # of operations to reach {} characters: {}"
-          .format(n, minOperations(n)))
+    return minOps
