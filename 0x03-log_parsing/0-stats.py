@@ -10,13 +10,14 @@ Prints the total file size and counts of possible status codes in the format:
 
 import fileinput
 
+
 def print_logs(file_size: int, status_codes: dict):
     """Prints file size and status code counts.
-    
+
     Args:
         file_size (int): Total file size.
         status_codes (dict): Dictionary of status codes and their counts.
-        
+
     Returns:
         None
     """
@@ -24,6 +25,7 @@ def print_logs(file_size: int, status_codes: dict):
     for code, count in sorted(status_codes.items()):
         if count > 0:
             print(f"{code}: {count}")
+
 
 def parse_log():
     """Parses logs from stdin and computes metrics."""
@@ -50,6 +52,6 @@ def parse_log():
         pass
     print_logs(file_size, status_codes)
 
+
 if __name__ == "__main__":
     parse_log()
-
