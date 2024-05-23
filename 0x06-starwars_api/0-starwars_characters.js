@@ -1,51 +1,35 @@
 #!/usr/bin/node
-
 const request = require('request');
 
-// Get the Movie ID from the command line arguments
-const movieId = process.argv[2];
-
-if (!movieId) {
-  console.log('Please provide a Movie ID');
+if (process.argv.length !== 3) {
+  console.error('Usage: node 0-starwars_characters.js <Movie ID>');
   process.exit(1);
 }
 
-// URL for the Star Wars API to get the movie details
-const apiUrl = `https://swapi-api.hbtn.io/api/films/${movieId}/`;
+const movieId = process.argv[2];
 
-// Make a request to the Star Wars API
-request(apiUrl, (error, response, body) => {
+request.get(`https://swapi.dev/api/films/${movieId}/`, (error, response, body) => {
   if (error) {
-    console.error('Error:', error);
-    return;
+    console.error(error);
+    process.exit(1);
   }
 
-  if (response.statusCode !== 200) {
-    console.error('Failed to retrieve movie data');
-    return;
-  }
+  const data = JSON.parse(body);
+  const characters = data.characters;
 
-  // Parse the response body as JSON
-  const movieData = JSON.parse(body);
-  const characters = movieData.characters;
-
-  // For each character URL, make a request to get the character name
-  characters.forEach((characterUrl) => {
-    request(characterUrl, (error, response, body) => {
+  characters.forEach((characterUrl, index) => {
+    request.get(characterUrl, (error, response, body) => {
       if (error) {
-        console.error('Error:', error);
-        return;
+        console.error(error);
+        process.exit(1);
       }
 
-      if (response.statusCode !== 200) {
-        console.error('Failed to retrieve character data');
-        return;
-      }
-
-      // Parse the response body as JSON
       const characterData = JSON.parse(body);
       console.log(characterData.name);
+
+      if (index === characters.length - 1) {
+        process.exit(0);
+      }
     });
   });
 });
-
