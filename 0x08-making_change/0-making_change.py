@@ -2,6 +2,7 @@
 
 """ 0-making_change.py """
 
+
 def makeChange(coins, total):
     if total <= 0:
         return 0
