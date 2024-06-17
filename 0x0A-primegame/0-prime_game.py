@@ -1,45 +1,41 @@
 #!/usr/bin/python3
+"""0-prime_game.py module"""
+
+
 def isWinner(x, nums):
-    if x <= 0 or not nums:
-        return None
+    """Main function for gameplay"""
 
-    # Finding the maximum number in nums to set the limit for sieve
-    max_num = max(nums)
+    scores = [0, 0]
+    current_player = 0
+    remaining_nums = set(range(1, 10001))
 
-    # Sieve of Eratosthenes to find all primes up to max_num
-    is_prime = [True] * (max_num + 1)
-    is_prime[0] = is_prime[1] = False
+    primes = set()
 
-    for start in range(2, int(max_num ** 0.5) + 1):
-        if is_prime[start]:
-            for multiple in range(start * start, max_num + 1, start):
-                is_prime[multiple] = False
+    for num in range(2, 10001):
+        if num not in primes:
+            primes.add(num)
+            for multiple in range(num * 2, 10001, num):
+                primes.add(multiple)
 
-    # Determine the number of primes up to each number i from 0 to max_num
-    prime_count = [0] * (max_num + 1)
-    for i in range(1, max_num + 1):
-        prime_count[i] = prime_count[i - 1]
-        if is_prime[i]:
-            prime_count[i] += 1
+    for i in range(x):
+        n = nums[i] if i < len(nums) else 10000
+        remaining_nums = remaining_nums - set(range(1, n + 1))
+        prime_nums = primes & remaining_nums
 
-    # Game simulation
-    maria_wins = 0
-    ben_wins = 0
-
-    for n in nums:
-        if prime_count[n] % 2 == 0:
-            ben_wins += 1
+        if not prime_nums:
+            if current_player == 0:
+                scores[current_player] += 1
+            else:
+                scores[current_player] += 1
         else:
-            maria_wins += 1
+            smallest_prime = min(prime_nums)
+            remaining_nums -= set(range(smallest_prime, n + 1, smallest_prime))
+            scores[current_player] += 1
+    current_player = 1 - current_player
 
-    # Determine the overall winner
-    if maria_wins > ben_wins:
+    if scores[0] > scores[1]:
         return "Maria"
-    elif ben_wins > maria_wins:
+    elif scores[0] < scores[1]:
         return "Ben"
     else:
         return None
-
-
-if __name__ == "__main__":
-    print("Winner: {}".format(isWinner(5, [2, 5, 1, 4, 3])))
